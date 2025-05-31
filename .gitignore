@@ -1,0 +1,10 @@
+# Gradle
+.gradle/
+**/build/
+
+# Android Studio
+/.idea/
+/local.properties
+
+# Другие временные файлы (если нужно)
+*.iml
