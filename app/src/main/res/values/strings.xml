@@ -9,6 +9,7 @@
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
     <string name="btn_login">Log in</string>
+    <string name="btn_register">Register</string>
     <string name="lable_login">Log in.</string>
     <string name="str_publish">publish</string>
     <string name="something_went_wrong">Something went wrong</string>
