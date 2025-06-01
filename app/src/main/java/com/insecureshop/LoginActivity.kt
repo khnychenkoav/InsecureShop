@@ -37,14 +37,14 @@ class LoginActivity : AppCompatActivity() {
         val username = mBinding.edtUserName.text.toString().trim()
         val password = mBinding.edtPassword.text.toString().trim()
 
-        Log.d("LoginActivity", "userName = $username")
-        Log.d("LoginActivity", "password = $password")
+        //Log.d("LoginActivity", "userName = $username")
+        //Log.d("LoginActivity", "password = $password")
 
         val auth = Util.verifyUserNamePassword(this, username, password)
 
         if (auth) {
             Prefs.getInstance(applicationContext).username = username
-            Prefs.getInstance(applicationContext).password = password
+            //Prefs.getInstance(applicationContext).password = password
 
             Util.saveProductList(this)
 

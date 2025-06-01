@@ -36,21 +36,23 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() 
         holder.mBinding.productCount.text = prodDetail.qty.toString()
         holder.mBinding.prodPrice.text = "$ " + prodDetail.price
         holder.mBinding.icAdd.setOnClickListener {
-            prodDetail.qty = prodDetail.qty + 1
+            prodDetail.qty += 1
             holder.mBinding.productCount.text = prodDetail.qty.toString()
             Util.updateProductItem(context, prodDetail)
         }
         holder.mBinding.icRemove.setOnClickListener {
             if (prodDetail.qty > 0) {
-                prodDetail.qty = prodDetail.qty - 1
+                prodDetail.qty -= 1
                 holder.mBinding.productCount.text = prodDetail.qty.toString()
                 Util.updateProductItem(context, prodDetail)
             }
         }
         holder.mBinding.moreInfo.setOnClickListener {
 
-            val intent = Intent("com.insecureshop.action.PRODUCT_DETAIL")
-            intent.putExtra("url", prodDetail.url)
+            val intent = Intent("com.insecureshop.action.PRODUCT_DETAIL").apply {
+                putExtra("url", prodDetail.url)
+                setPackage(context.packageName)
+            }
             context.sendBroadcast(intent)
 
         }

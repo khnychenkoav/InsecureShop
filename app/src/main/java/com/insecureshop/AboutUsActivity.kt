@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.activity_about_us.*
 
 class AboutUsActivity : AppCompatActivity() {
 
-    lateinit var receiver: CustomReceiver
+    private lateinit var receiver: CustomReceiver
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +32,7 @@ class AboutUsActivity : AppCompatActivity() {
         val intent = Intent("com.insecureshop.action.BROADCAST")
         intent.putExtra("username", userName)
         intent.putExtra("password", password)
+        intent.setPackage(this.packageName)
         sendBroadcast(intent)
 
         textView.text = "InsecureShop is an intentionally designed vulnerable android app built in Kotlin."
