@@ -1,16 +1,19 @@
 package com.insecureshop
 
+import android.net.Uri
 import android.os.Bundle
+import android.webkit.SslErrorHandler
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
+import com.insecureshop.Config.TRUSTED_HOST
+import com.insecureshop.Config.USER_AGENT
 import com.insecureshop.util.Prefs
 import kotlinx.android.synthetic.main.activity_product_list.*
 
 
 class PrivateActivity : AppCompatActivity() {
-
-    val USER_AGENT =
-        "Mozilla/5.0 (Linux; Android 4.1.1; Galaxy Nexus Build/JRO03C) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.65 Mobile Safari/537.36"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,16 +23,41 @@ class PrivateActivity : AppCompatActivity() {
 
         val webview = findViewById<WebView>(R.id.webview)
 
-        webview.settings.javaScriptEnabled = true
+        webview.settings.allowFileAccess = false
+        webview.settings.allowContentAccess = false
+        webview.settings.allowUniversalAccessFromFileURLs = false
+        webview.settings.allowFileAccessFromFileURLs = false
+
         webview.settings.loadWithOverviewMode = true
         webview.settings.useWideViewPort = true
-        webview.settings.userAgentString = USER_AGENT
-        webview.settings.allowUniversalAccessFromFileURLs = true
-        var data = intent.getStringExtra("url")
-        if (data == null) {
-            data = Config.WEBSITE_DOMAIN
+
+        webview.webViewClient = object : WebViewClient() {
+            override fun onReceivedSslError(
+                view: WebView,
+                handler: SslErrorHandler,
+                error: android.net.http.SslError
+            ) {
+                handler.cancel()
+                finish()
+            }
+
+            override fun shouldOverrideUrlLoading(
+                view: WebView,
+                request: WebResourceRequest
+            ): Boolean {
+                val uri: Uri = request.url
+                if (uri.host == TRUSTED_HOST) {
+                    return false
+                }
+                finish()
+                return true
+            }
         }
 
+        var data: String? = intent.getStringExtra("url")
+        if (data.isNullOrBlank()) {
+            data = Config.WEBSITE_DOMAIN
+        }
         webview.loadUrl(data)
         Prefs.getInstance(this).data = data
     }

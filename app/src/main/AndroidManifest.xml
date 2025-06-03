@@ -72,7 +72,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".WebView2Activity"
-            android:exported="true">
+            android:exported="false">
             <intent-filter tools:ignore="AppLinkUrlError">
                 <action android:name="com.insecureshop.action.WEBVIEW" />
                 <category android:name="android.intent.category.DEFAULT" />

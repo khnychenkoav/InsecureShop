@@ -1,16 +1,20 @@
 package com.insecureshop
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.webkit.SslErrorHandler
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_product_list.*
+import androidx.core.net.toUri
 
 
 class WebView2Activity : AppCompatActivity() {
 
-    val USER_AGENT =
-        "Mozilla/5.0 (Linux; Android 4.1.1; Galaxy Nexus Build/JRO03C) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.65 Mobile Safari/537.36"
+    private val TRUSTED_HOST = Config.TRUSTED_HOST
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,17 +31,53 @@ class WebView2Activity : AppCompatActivity() {
 
         val webview = findViewById<WebView>(R.id.webview)
 
-        webview.settings.javaScriptEnabled = true
+        webview.settings.javaScriptEnabled = false
+        webview.settings.allowFileAccess = false
+        webview.settings.allowContentAccess = false
+        webview.settings.allowUniversalAccessFromFileURLs = false
+        webview.settings.allowFileAccessFromFileURLs = false
         webview.settings.loadWithOverviewMode = true
         webview.settings.useWideViewPort = true
-        webview.settings.allowUniversalAccessFromFileURLs = true
-        webview.settings.userAgentString = USER_AGENT
-        if (!intent.dataString.isNullOrBlank()) {
-            webview.loadUrl(intent.dataString)
-        } else if (!intent.data?.getQueryParameter("url").isNullOrBlank()) {
-            webview.loadUrl(intent.data?.getQueryParameter("url"))
-        } else if(!intent.extras?.getString("url").isNullOrEmpty()){
-            webview.loadUrl(intent.extras?.getString("url"))
+
+        webview.webViewClient = object : WebViewClient() {
+            override fun onReceivedSslError(
+                view: WebView, handler: SslErrorHandler, error: android.net.http.SslError
+            ) {
+                handler.cancel()
+                finish()
+            }
+
+            override fun shouldOverrideUrlLoading(
+                view: WebView, request: WebResourceRequest
+            ): Boolean {
+                val uri: Uri = request.url
+                return if (uri.host == TRUSTED_HOST) {
+                    false
+                } else {
+                    finish()
+                    true
+                }
+            }
+        }
+
+        val incomingUri: String? = when {
+            !intent.dataString.isNullOrBlank() -> intent.dataString
+            !intent.data?.getQueryParameter("url").isNullOrBlank() ->
+                intent.data?.getQueryParameter("url")
+            !intent.extras?.getString("url").isNullOrEmpty() ->
+                intent.extras?.getString("url")
+            else -> null
+        }
+
+        if (!incomingUri.isNullOrBlank()) {
+            val parsed = incomingUri.toUri()
+            if (parsed.host == TRUSTED_HOST) {
+                webview.loadUrl(incomingUri)
+            } else {
+                finish()
+            }
+        } else {
+            webview.loadUrl(Config.WEBSITE_DOMAIN)
         }
     }
 }
