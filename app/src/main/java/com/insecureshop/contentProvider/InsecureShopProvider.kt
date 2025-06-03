@@ -30,8 +30,8 @@ class InsecureShopProvider : ContentProvider() {
         sortOrder: String?
     ): Cursor? {
         if (uriMatcher?.match(uri) == URI_CODE) {
-            val cursor = MatrixCursor(arrayOf("username", "password"))
-            cursor.addRow(arrayOf<String>(Prefs.username!!, Prefs.password!!))
+            val cursor = MatrixCursor(arrayOf("username"))
+            cursor.addRow(arrayOf<String>(Prefs.username!!))
             return cursor
         }
         return null
