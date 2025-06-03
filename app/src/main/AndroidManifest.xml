@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.insecureshop">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -7,7 +8,9 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 
-    <permission android:name="com.insecureshop.permission.READ" />
+    <permission
+        android:name="com.insecureshop.permission.READ"
+        android:protectionLevel="signature" />
 
     <application
         android:name=".InsecureShopApp"
@@ -20,7 +23,8 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name=".ChooserActivity"
-            android:excludeFromRecents="true">
+            android:excludeFromRecents="true"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -46,7 +50,8 @@
             android:name=".AboutUsActivity"
             android:exported="true" />
         <activity android:name=".CartListActivity" />
-        <activity android:name=".ProductListActivity">
+        <activity android:name=".ProductListActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -54,7 +59,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".LoginActivity" />
-        <activity android:name=".WebViewActivity">
+        <activity android:name=".WebViewActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -65,8 +71,9 @@
                     android:scheme="insecureshop" />
             </intent-filter>
         </activity>
-        <activity android:name=".WebView2Activity">
-            <intent-filter>
+        <activity android:name=".WebView2Activity"
+            android:exported="true">
+            <intent-filter tools:ignore="AppLinkUrlError">
                 <action android:name="com.insecureshop.action.WEBVIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -82,7 +89,7 @@
         <provider
             android:name=".contentProvider.InsecureShopProvider"
             android:authorities="com.insecureshop.provider"
-            android:exported="true"
+            android:exported="false"
             android:readPermission="com.insecureshop.permission.READ" />
         <provider
             android:name="androidx.core.content.FileProvider"

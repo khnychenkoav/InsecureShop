@@ -29,12 +29,7 @@ object Prefs {
         set(value) {
             sharedpreferences.edit() { putString("username", value) }
         }
-
-    var password: String?
-        get() = sharedpreferences.getString("password","")
-        set(value) {
-            sharedpreferences.edit() { putString("password", value) }
-        }
+    //избавились от пароля вовсе, вся логика уже есть в Utils
 
     var productList: String?
         get() = sharedpreferences.getString("productList","")
@@ -44,6 +39,6 @@ object Prefs {
 
 
     fun clearAll(){
-        sharedpreferences.edit().clear().apply()
+        sharedpreferences.edit() { clear() }
     }
 }

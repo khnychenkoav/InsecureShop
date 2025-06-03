@@ -17,7 +17,7 @@ object Util {
     private const val KEY_HASHED_PASSWORD = "key_hashed_password"
 
 
-    private fun getEncryptedPrefs(context: Context): SharedPreferences {
+    internal fun getEncryptedPrefs(context: Context): SharedPreferences {
         val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
 
         return EncryptedSharedPreferences.create(

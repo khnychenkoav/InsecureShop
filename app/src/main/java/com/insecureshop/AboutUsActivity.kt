@@ -27,11 +27,11 @@ class AboutUsActivity : AppCompatActivity() {
 
     fun onSendData(view: View) {
         val userName = Prefs.username!!
-        val password = Prefs.password!!
+        //val password = Prefs.password!!
 
         val intent = Intent("com.insecureshop.action.BROADCAST")
         intent.putExtra("username", userName)
-        intent.putExtra("password", password)
+        //intent.putExtra("password", password)
         intent.setPackage(this.packageName)
         sendBroadcast(intent)
 
