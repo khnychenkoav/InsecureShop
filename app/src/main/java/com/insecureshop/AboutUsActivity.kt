@@ -33,7 +33,7 @@ class AboutUsActivity : AppCompatActivity() {
         intent.putExtra("username", userName)
         //intent.putExtra("password", password)
         intent.setPackage(this.packageName)
-        sendBroadcast(intent)
+        sendBroadcast(intent, "com.insecureshop.permission.SEND_PROTECTED_BROADCAST")
 
         textView.text = "InsecureShop is an intentionally designed vulnerable android app built in Kotlin."
 

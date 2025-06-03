@@ -34,7 +34,11 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() 
             .into(holder.mBinding.picture)
         holder.mBinding.prodName.text = prodDetail.name
         holder.mBinding.productCount.text = prodDetail.qty.toString()
-        holder.mBinding.prodPrice.text = "$ " + prodDetail.price
+        val ctx = holder.mBinding.root.context
+        holder.mBinding.prodPrice.text = ctx.getString(
+            R.string.price_format,
+            prodDetail.price
+        )
         holder.mBinding.icAdd.setOnClickListener {
             prodDetail.qty += 1
             holder.mBinding.productCount.text = prodDetail.qty.toString()
@@ -53,7 +57,7 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() 
                 putExtra("url", prodDetail.url)
                 setPackage(context.packageName)
             }
-            context.sendBroadcast(intent)
+            context.sendBroadcast(intent, "com.insecureshop.permission.SEND_PROTECTED_BROADCAST")
 
         }
     }

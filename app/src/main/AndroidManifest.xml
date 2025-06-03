@@ -12,6 +12,10 @@
         android:name="com.insecureshop.permission.READ"
         android:protectionLevel="signature" />
 
+    <permission
+        android:name="com.insecureshop.permission.SEND_PROTECTED_BROADCAST"
+        android:protectionLevel="signature" />
+
     <application
         android:name=".InsecureShopApp"
         android:allowBackup="true"
@@ -100,6 +104,23 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
-    </application>
+        <receiver
+            android:name=".broadcast.ProductDetailBroadCast"
+            android:exported="true"
+            android:permission="com.insecureshop.permission.SEND_PROTECTED_BROADCAST">
+            <intent-filter>
+                <action android:name="com.insecureshop.action.PRODUCT_DETAIL" />
+            </intent-filter>
+        </receiver>
 
+        <receiver
+            android:name=".CustomReceiver"
+            android:exported="true"
+            android:permission="com.insecureshop.permission.SEND_PROTECTED_BROADCAST">
+            <intent-filter>
+                <action android:name="com.insecureshop.CUSTOM_INTENT" />
+            </intent-filter>
+        </receiver>
+
+    </application>
 </manifest>

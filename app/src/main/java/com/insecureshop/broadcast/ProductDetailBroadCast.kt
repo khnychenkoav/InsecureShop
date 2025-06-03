@@ -4,12 +4,16 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import com.insecureshop.Config
+import com.insecureshop.WebViewActivity
 
 class ProductDetailBroadCast : BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
-        val webViewIntent = Intent("com.insecureshop.action.WEBVIEW")
-        webViewIntent.putExtra("url",Config.WEBSITE_DOMAIN)
+        val url = intent?.getStringExtra("url") ?: return
+        val webViewIntent = Intent(context, WebViewActivity::class.java).apply {
+            putExtra("url", url)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
         context?.startActivity(webViewIntent)
     }
 }

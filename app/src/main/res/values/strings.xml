@@ -24,5 +24,6 @@
     <string name="txt_kala_uploaded">Your file has been uploaded.</string>
     <string name="txt_ok">Ok</string>
     <string name="webview">Webview</string>
+    <string name="price_format">$ %s</string>
     <string name="aws_Identity_pool_ID"></string>
 </resources>
