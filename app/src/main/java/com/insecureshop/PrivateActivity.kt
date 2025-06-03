@@ -28,7 +28,7 @@ class PrivateActivity : AppCompatActivity() {
         webview.settings.allowUniversalAccessFromFileURLs = true
         var data = intent.getStringExtra("url")
         if (data == null) {
-            data = "https://www.insecureshopapp.com"
+            data = Config.websiteDomain
         }
 
         webview.loadUrl(data)

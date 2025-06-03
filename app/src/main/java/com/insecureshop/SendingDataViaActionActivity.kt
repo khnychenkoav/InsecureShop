@@ -22,7 +22,7 @@ class SendingDataViaActionActivity : AppCompatActivity() {
 
     fun onSendData(view: View) {
         val intent = Intent("com.insecureshop.action.WEBVIEW")
-        intent.putExtra("url", "https://www.insecureshop.com/")
+        intent.putExtra("url", Config.websiteDomain)
         try {
             startActivity(intent)
         } catch (e: ActivityNotFoundException) {

@@ -30,7 +30,7 @@ class InsecureshopFileProvider : ContentProvider() {
         sortOrder: String?
     ): Cursor? {
         if (uriMatcher?.match(uri) == URI_CODE) {
-            val cursor = MatrixCursor(arrayOf("username",))
+            val cursor = MatrixCursor(arrayOf("username"))
             cursor.addRow(arrayOf<String>(Prefs.username!!))
             return cursor
         }

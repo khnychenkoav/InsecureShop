@@ -5,6 +5,8 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
+import com.insecureshop.BuildConfig
+import com.insecureshop.Config
 import java.security.SecureRandom
 import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.PBEKeySpec
@@ -67,15 +69,16 @@ object Util {
 
 
     private fun getProductList(): ArrayList<com.insecureshop.ProductDetail> {
+        val domain = Config.websiteDomain
         val productList = ArrayList<com.insecureshop.ProductDetail>()
-        productList.add(com.insecureshop.ProductDetail(1, "Laptop", "https://images.pexels.com/photos/7974/pexels-photo.jpg", "80", 1, "https://www.insecureshopapp.com"))
-        productList.add(com.insecureshop.ProductDetail(2, "Hat", "https://images.pexels.com/photos/984619/pexels-photo-984619.jpeg", "10", 2, "https://www.insecureshopapp.com"))
-        productList.add(com.insecureshop.ProductDetail(3, "Sunglasses", "https://images.pexels.com/photos/343720/pexels-photo-343720.jpeg", "10", 4, "https://www.insecureshopapp.com"))
-        productList.add(com.insecureshop.ProductDetail(4, "Watch", "https://images.pexels.com/photos/277390/pexels-photo-277390.jpeg", "30", 4, "https://www.insecureshopapp.com"))
-        productList.add(com.insecureshop.ProductDetail(5, "Camera", "https://images.pexels.com/photos/225157/pexels-photo-225157.jpeg", "40", 2, "https://www.insecureshopapp.com"))
-        productList.add(com.insecureshop.ProductDetail(6, "Perfumes", "https://images.pexels.com/photos/264819/pexels-photo-264819.jpeg", "10", 2, "https://www.insecureshopapp.com"))
-        productList.add(com.insecureshop.ProductDetail(7, "Bagpack", "https://images.pexels.com/photos/532803/pexels-photo-532803.jpeg", "20", 2, "https://www.insecureshopapp.com"))
-        productList.add(com.insecureshop.ProductDetail(8, "Jacket", "https://images.pexels.com/photos/789812/pexels-photo-789812.jpeg", "20", 2, "https://www.insecureshopapp.com"))
+        productList.add(com.insecureshop.ProductDetail(1, "Laptop", "https://images.pexels.com/photos/7974/pexels-photo.jpg", "80", 1, domain))
+        productList.add(com.insecureshop.ProductDetail(2, "Hat", "https://images.pexels.com/photos/984619/pexels-photo-984619.jpeg", "10", 2, domain))
+        productList.add(com.insecureshop.ProductDetail(3, "Sunglasses", "https://images.pexels.com/photos/343720/pexels-photo-343720.jpeg", "10", 4, domain))
+        productList.add(com.insecureshop.ProductDetail(4, "Watch", "https://images.pexels.com/photos/277390/pexels-photo-277390.jpeg", "30", 4, domain))
+        productList.add(com.insecureshop.ProductDetail(5, "Camera", "https://images.pexels.com/photos/225157/pexels-photo-225157.jpeg", "40", 2, domain))
+        productList.add(com.insecureshop.ProductDetail(6, "Perfumes", "https://images.pexels.com/photos/264819/pexels-photo-264819.jpeg", "10", 2, domain))
+        productList.add(com.insecureshop.ProductDetail(7, "Bagpack", "https://images.pexels.com/photos/532803/pexels-photo-532803.jpeg", "20", 2, domain))
+        productList.add(com.insecureshop.ProductDetail(8, "Jacket", "https://images.pexels.com/photos/789812/pexels-photo-789812.jpeg", "20", 2, domain))
         return productList
     }
 
