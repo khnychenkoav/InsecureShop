@@ -8,6 +8,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
 import com.insecureshop.util.Prefs
+import kotlinx.android.synthetic.main.activity_product_list.*
 import androidx.core.net.toUri
 
 class WebViewActivity : AppCompatActivity() {
