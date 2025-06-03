@@ -34,7 +34,7 @@ class WebViewActivity : AppCompatActivity() {
             if (uri.path.equals("/web")) {
                 data = intent.data?.getQueryParameter("url")
             } else if (uri.path.equals("/webview")) {
-                if (intent.data!!.getQueryParameter("url")!!.endsWith(Config.websiteDomain)) {
+                if (intent.data!!.getQueryParameter("url")!!.endsWith(Config.WEBSITE_DOMAIN)) {
                     data = intent.data?.getQueryParameter("url")
                 }
             }

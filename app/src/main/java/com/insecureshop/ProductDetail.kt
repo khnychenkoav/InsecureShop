@@ -6,6 +6,6 @@ data class ProductDetail(
     var imageUrl: String,
     var price: String,
     var rating: Int,
-    var url: String = Config.websiteDomain,
+    var url: String = Config.WEBSITE_DOMAIN,
     var qty: Int = 0
 )

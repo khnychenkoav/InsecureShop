@@ -9,7 +9,7 @@ class ProductDetailBroadCast : BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
         val webViewIntent = Intent("com.insecureshop.action.WEBVIEW")
-        webViewIntent.putExtra("url",Config.websiteDomain)
+        webViewIntent.putExtra("url",Config.WEBSITE_DOMAIN)
         context?.startActivity(webViewIntent)
     }
 }

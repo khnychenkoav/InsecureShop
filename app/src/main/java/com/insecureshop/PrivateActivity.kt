@@ -1,6 +1,5 @@
 package com.insecureshop
 
-import android.content.Intent
 import android.os.Bundle
 import android.webkit.WebView
 import androidx.appcompat.app.AppCompatActivity
@@ -28,7 +27,7 @@ class PrivateActivity : AppCompatActivity() {
         webview.settings.allowUniversalAccessFromFileURLs = true
         var data = intent.getStringExtra("url")
         if (data == null) {
-            data = Config.websiteDomain
+            data = Config.WEBSITE_DOMAIN
         }
 
         webview.loadUrl(data)

@@ -5,7 +5,6 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
-import com.insecureshop.BuildConfig
 import com.insecureshop.Config
 import java.security.SecureRandom
 import javax.crypto.SecretKeyFactory
@@ -69,7 +68,7 @@ object Util {
 
 
     private fun getProductList(): ArrayList<com.insecureshop.ProductDetail> {
-        val domain = Config.websiteDomain
+        val domain = Config.WEBSITE_DOMAIN
         val productList = ArrayList<com.insecureshop.ProductDetail>()
         productList.add(com.insecureshop.ProductDetail(1, "Laptop", "https://images.pexels.com/photos/7974/pexels-photo.jpg", "80", 1, domain))
         productList.add(com.insecureshop.ProductDetail(2, "Hat", "https://images.pexels.com/photos/984619/pexels-photo-984619.jpeg", "10", 2, domain))

@@ -1,5 +1,5 @@
 package com.insecureshop
 
 object Config {
-    val websiteDomain = "https://www.insecureshopapp.com"
+    const val WEBSITE_DOMAIN = "https://www.insecureshopapp.com"
 }
