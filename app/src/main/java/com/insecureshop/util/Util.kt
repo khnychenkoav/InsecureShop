@@ -2,25 +2,30 @@ package com.insecureshop.util
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.core.content.edit
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
-import com.insecureshop.Config
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.insecureshop.ProductDetail
+import java.io.IOException
+import java.io.InputStreamReader
 import java.security.SecureRandom
 import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.PBEKeySpec
 
 object Util {
 
+    private const val TAG = "Util"
+    private const val PRODUCTS_ASSET_FILE = "products.json"
     private const val ENCRYPTED_PREFS_FILENAME = "user_credentials_prefs"
     private const val KEY_USERNAME = "key_username"
     private const val KEY_SALT = "key_salt"
     private const val KEY_HASHED_PASSWORD = "key_hashed_password"
 
-
     internal fun getEncryptedPrefs(context: Context): SharedPreferences {
         val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
-
         return EncryptedSharedPreferences.create(
             ENCRYPTED_PREFS_FILENAME,
             masterKeyAlias,
@@ -30,12 +35,12 @@ object Util {
         )
     }
 
-
     fun registerUser(context: Context, username: String, password: String) {
         val salt = ByteArray(16).also { SecureRandom().nextBytes(it) }
         val hashedPwBytes = hashPassword(password, salt)
         val saltB64 = android.util.Base64.encodeToString(salt, android.util.Base64.NO_WRAP)
         val hashB64 = android.util.Base64.encodeToString(hashedPwBytes, android.util.Base64.NO_WRAP)
+
         val prefs = getEncryptedPrefs(context)
         prefs.edit {
             putString(KEY_USERNAME, username)
@@ -52,13 +57,14 @@ object Util {
 
         val saltB64 = prefs.getString(KEY_SALT, null) ?: return false
         val expectedHashB64 = prefs.getString(KEY_HASHED_PASSWORD, null) ?: return false
+
         val saltBytes = android.util.Base64.decode(saltB64, android.util.Base64.NO_WRAP)
         val expectedHashBytes = android.util.Base64.decode(expectedHashB64, android.util.Base64.NO_WRAP)
             ?: return false
+
         val inputHashBytes = hashPassword(inputPass, saltBytes)
         return expectedHashBytes.contentEquals(inputHashBytes)
     }
-
 
     private fun hashPassword(password: String, salt: ByteArray): ByteArray {
         val spec = PBEKeySpec(password.toCharArray(), salt, 10_000, 256)
@@ -66,49 +72,107 @@ object Util {
         return skf.generateSecret(spec).encoded
     }
 
-
-    private fun getProductList(): ArrayList<com.insecureshop.ProductDetail> {
-        val domain = Config.WEBSITE_DOMAIN
-        val productList = ArrayList<com.insecureshop.ProductDetail>()
-        productList.add(com.insecureshop.ProductDetail(1, "Laptop", "https://images.pexels.com/photos/7974/pexels-photo.jpg", "80", 1, domain))
-        productList.add(com.insecureshop.ProductDetail(2, "Hat", "https://images.pexels.com/photos/984619/pexels-photo-984619.jpeg", "10", 2, domain))
-        productList.add(com.insecureshop.ProductDetail(3, "Sunglasses", "https://images.pexels.com/photos/343720/pexels-photo-343720.jpeg", "10", 4, domain))
-        productList.add(com.insecureshop.ProductDetail(4, "Watch", "https://images.pexels.com/photos/277390/pexels-photo-277390.jpeg", "30", 4, domain))
-        productList.add(com.insecureshop.ProductDetail(5, "Camera", "https://images.pexels.com/photos/225157/pexels-photo-225157.jpeg", "40", 2, domain))
-        productList.add(com.insecureshop.ProductDetail(6, "Perfumes", "https://images.pexels.com/photos/264819/pexels-photo-264819.jpeg", "10", 2, domain))
-        productList.add(com.insecureshop.ProductDetail(7, "Bagpack", "https://images.pexels.com/photos/532803/pexels-photo-532803.jpeg", "20", 2, domain))
-        productList.add(com.insecureshop.ProductDetail(8, "Jacket", "https://images.pexels.com/photos/789812/pexels-photo-789812.jpeg", "20", 2, domain))
-        return productList
+    private fun getProductListFromJson(context: Context): ArrayList<ProductDetail> {
+        Log.d(TAG, "getProductListFromJson: Attempting to load from $PRODUCTS_ASSET_FILE")
+        try {
+            context.assets.open(PRODUCTS_ASSET_FILE).use { inputStream ->
+                InputStreamReader(inputStream).use { reader ->
+                    val productListType = object : TypeToken<List<ProductDetail>>() {}.type
+                    val products: List<ProductDetail>? = Gson().fromJson(reader, productListType)
+                    Log.d(TAG, "getProductListFromJson: Parsed ${products?.size ?: 0} products from assets.")
+                    products?.forEachIndexed { index, product ->
+                        Log.d(TAG, "getProductListFromJson (Asset RAW): Product $index - ID: ${product.id}, Name: ${product.name}, ImageUrl: ${product.imageUrl}, Price: ${product.price}, Rating: ${product.rating}, Url: ${product.url}, Qty: ${product.qty}")
+                    }
+                    return ArrayList(products ?: emptyList())
+                }
+            }
+        } catch (ioEx: IOException) {
+            Log.e(TAG, "getProductListFromJson: IOException reading $PRODUCTS_ASSET_FILE: ${ioEx.message}", ioEx)
+        } catch (jsonEx: Exception) {
+            Log.e(TAG, "getProductListFromJson: Exception parsing $PRODUCTS_ASSET_FILE: ${jsonEx.message}", jsonEx)
+        }
+        Log.w(TAG, "getProductListFromJson: Returning empty list due to error or no products found.")
+        return arrayListOf()
     }
 
-    fun saveProductList(context: Context, productList: List<com.insecureshop.ProductDetail> = getProductList()) {
-        val productJson = com.google.gson.Gson().toJson(productList)
+    fun saveProductList(context: Context, productListToSave: List<ProductDetail> = getProductListFromJson(context)) {
+        Log.d(TAG, "saveProductList: Attempting to save ${productListToSave.size} products.")
+        productListToSave.forEachIndexed { index, product ->
+            Log.d(TAG, "saveProductList (Before toJson): Product $index - ID: ${product.id}, Name: ${product.name}, ImageUrl: ${product.imageUrl}, Price: ${product.price}, Rating: ${product.rating}, Url: ${product.url}, Qty: ${product.qty}")
+        }
+        val productJson = Gson().toJson(productListToSave)
+        Log.d(TAG, "saveProductList: Generated JSON to save: $productJson")
         Prefs.getInstance(context).productList = productJson
+        Log.d(TAG, "saveProductList: Product list saved to Prefs.")
     }
 
-    fun getProductsPrefs(context: Context): List<com.insecureshop.ProductDetail> {
-        val products = Prefs.getInstance(context).productList
-        return com.google.gson.Gson().fromJson(products, object : com.google.gson.reflect.TypeToken<List<com.insecureshop.ProductDetail>>() {}.type)
+    fun getProductsPrefs(context: Context): List<ProductDetail> {
+        val productsJsonString = Prefs.getInstance(context).productList
+        Log.d(TAG, "getProductsPrefs: Raw JSON string from Prefs: '$productsJsonString'")
+
+        if (productsJsonString.isNullOrEmpty()) {
+            Log.i(TAG, "getProductsPrefs: Product list in Prefs is null or empty. Loading from assets.")
+            val productsFromAssets = getProductListFromJson(context)
+            if (productsFromAssets.isNotEmpty()) {
+                Log.i(TAG, "getProductsPrefs: Saving freshly loaded asset list to Prefs.")
+                saveProductList(context, productsFromAssets) // Сохраняем тут
+            }
+            return productsFromAssets
+        }
+
+        return try {
+            val productListType = object : TypeToken<List<ProductDetail>>() {}.type
+            val listFromPrefs: List<ProductDetail>? = Gson().fromJson(productsJsonString, productListType)
+            Log.d(TAG, "getProductsPrefs: Parsed ${listFromPrefs?.size ?: 0} products from Prefs.")
+            listFromPrefs?.forEachIndexed { index, product ->
+                Log.d(TAG, "getProductsPrefs (Prefs Parsed): Product $index - ID: ${product.id}, Name: ${product.name}, ImageUrl: ${product.imageUrl}")
+            }
+
+            if (listFromPrefs == null) {
+                Log.w(TAG, "getProductsPrefs: Parsed list from Prefs was null. Falling back to assets.")
+                return getProductListFromJson(context)
+            }
+            listFromPrefs
+
+        } catch (parseEx: Exception) {
+            Log.e(TAG, "getProductsPrefs: Exception parsing productList from Prefs. Loading from assets. Error: ${parseEx.message}", parseEx)
+            val productsFromAssetsOnError = getProductListFromJson(context)
+            if (productsFromAssetsOnError.isNotEmpty()) {
+                Log.i(TAG, "getProductsPrefs: Saving freshly loaded asset list to Prefs after parse error.")
+                saveProductList(context, productsFromAssetsOnError)
+            }
+            return productsFromAssetsOnError
+        }
     }
 
-    fun updateProductItem(context: Context, updateProductDetail: com.insecureshop.ProductDetail) {
-        val productList = getProductsPrefs(context)
-        for (productDetail in productList) {
-            if (productDetail.id == updateProductDetail.id) {
-                productDetail.qty = updateProductDetail.qty
+    fun updateProductItem(context: Context, updateProductDetail: ProductDetail) {
+        val productList = getProductsPrefs(context).toMutableList()
+        var isFound = false
+        for (i in productList.indices) {
+            if (productList[i].id == updateProductDetail.id) {
+                productList[i] = productList[i].copy(qty = updateProductDetail.qty)
+                isFound = true
+                Log.d(TAG, "updateProductItem: Updated product ID ${updateProductDetail.id} to qty ${updateProductDetail.qty}")
+                break
             }
         }
-        saveProductList(context, productList)
+        if (isFound) {
+            saveProductList(context, productList)
+        } else {
+            Log.w(TAG, "updateProductItem: Product with id=${updateProductDetail.id} not found for update.")
+        }
     }
 
-    fun getCartProduct(context: Context): ArrayList<com.insecureshop.ProductDetail> {
-        val cartList = arrayListOf<com.insecureshop.ProductDetail>()
-        val productList = getProductsPrefs(context)
-        for (productDetail in productList) {
+    fun getCartProduct(context: Context): ArrayList<ProductDetail> {
+        val cartList = arrayListOf<ProductDetail>()
+        val currentProducts = getProductsPrefs(context)
+        Log.d(TAG, "getCartProduct: Processing ${currentProducts.size} products for cart.")
+        for (productDetail in currentProducts) {
             if (productDetail.qty > 0) {
                 cartList.add(productDetail)
             }
         }
+        Log.d(TAG, "getCartProduct: Found ${cartList.size} items in cart.")
         return cartList
     }
 }

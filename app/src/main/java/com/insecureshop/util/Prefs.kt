@@ -29,7 +29,6 @@ object Prefs {
         set(value) {
             sharedpreferences.edit() { putString("username", value) }
         }
-    //избавились от пароля вовсе, вся логика уже есть в Utils
 
     var productList: String?
         get() = sharedpreferences.getString("productList","")

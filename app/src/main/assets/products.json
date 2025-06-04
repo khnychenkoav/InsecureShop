@@ -1,0 +1,58 @@
+[
+  {
+    "id": 1,
+    "name": "Laptop",
+    "imageUrl": "https://images.pexels.com/photos/7974/pexels-photo.jpg",
+    "price": "80",
+    "rating": 1
+  },
+  {
+    "id": 2,
+    "name": "Hat",
+    "imageUrl": "https://images.pexels.com/photos/984619/pexels-photo-984619.jpeg",
+    "price": "10",
+    "rating": 2
+  },
+  {
+    "id": 3,
+    "name": "Sunglasses",
+    "imageUrl": "https://images.pexels.com/photos/343720/pexels-photo-343720.jpeg",
+    "price": "10",
+    "rating": 4
+  },
+  {
+    "id": 4,
+    "name": "Watch",
+    "imageUrl": "https://images.pexels.com/photos/277390/pexels-photo-277390.jpeg",
+    "price": "30",
+    "rating": 4
+  },
+  {
+    "id": 5,
+    "name": "Camera",
+    "imageUrl": "https://images.pexels.com/photos/225157/pexels-photo-225157.jpeg",
+    "price": "40",
+    "rating": 2
+  },
+  {
+    "id": 6,
+    "name": "Perfumes",
+    "imageUrl": "https://images.pexels.com/photos/264819/pexels-photo-264819.jpeg",
+    "price": "10",
+    "rating": 2
+  },
+  {
+    "id": 7,
+    "name": "Bagpack",
+    "imageUrl": "https://images.pexels.com/photos/532803/pexels-photo-532803.jpeg",
+    "price": "20",
+    "rating": 2
+  },
+  {
+    "id": 8,
+    "name": "Jacket",
+    "imageUrl": "https://images.pexels.com/photos/789812/pexels-photo-789812.jpeg",
+    "price": "20",
+    "rating": 2
+  }
+]

@@ -19,3 +19,15 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-keepclassmembers public class com.insecureshop.ProductDetail { *; }
+-keep class com.insecureshop.ProductDetail { *; }
+-keep class com.insecureshop.Cart { *; }
+-keep class com.insecureshop.util.** { *; }
+-keepattributes Signature
+-keepattributes *Annotation*
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
+-keep public class com.google.gson.reflect.TypeToken
+-keep public class * extends com.google.gson.reflect.TypeToken
