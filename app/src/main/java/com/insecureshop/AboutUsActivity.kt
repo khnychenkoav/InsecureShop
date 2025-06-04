@@ -7,6 +7,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.insecureshop.util.Prefs
 import kotlinx.android.synthetic.main.activity_about_us.*
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 
 
 class AboutUsActivity : AppCompatActivity() {
@@ -17,11 +18,14 @@ class AboutUsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_about_us)
         receiver = CustomReceiver()
-        registerReceiver(receiver, IntentFilter("com.insecureshop.CUSTOM_INTENT"))
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+            receiver,
+            IntentFilter("com.insecureshop.CUSTOM_INTENT")
+        )
     }
 
     override fun onDestroy() {
-        unregisterReceiver(receiver)
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver)
         super.onDestroy()
     }
 
