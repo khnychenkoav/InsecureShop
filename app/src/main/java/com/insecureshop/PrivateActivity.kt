@@ -46,9 +46,15 @@ class PrivateActivity : AppCompatActivity() {
                 request: WebResourceRequest
             ): Boolean {
                 val uri: Uri = request.url
-                if (uri.host == TRUSTED_HOST) {
+                val currentHost = uri.host
+                val expectedHost1 = "insecureshopapp.com"
+                val expectedHost2 = "www.insecureshopapp.com"
+                if (currentHost != null &&
+                    (currentHost.equals(expectedHost1, ignoreCase = true) ||
+                            currentHost.equals(expectedHost2, ignoreCase = true))) {
                     return false
                 }
+
                 finish()
                 return true
             }

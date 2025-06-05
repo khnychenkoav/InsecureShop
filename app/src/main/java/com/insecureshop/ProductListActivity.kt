@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
@@ -15,8 +16,10 @@ import kotlinx.android.synthetic.main.activity_product_list.*
 
 
 class ProductListActivity : AppCompatActivity() {
-    private val productDetailBroadCast = ProductDetailBroadCast()
+    //private val productDetailBroadCast = ProductDetailBroadCast()
+    private val TAG_LIST_ACTIVITY = "ProductList_ACTIVITY_DEBUG"
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.d(TAG_LIST_ACTIVITY, "onCreate: ProductListActivity STARTED!")
         super.onCreate(savedInstanceState)
         if (TextUtils.isEmpty(Prefs.getInstance(applicationContext).username)) {
             val intent = Intent(this, LoginActivity::class.java)
@@ -27,13 +30,14 @@ class ProductListActivity : AppCompatActivity() {
         setContentView(R.layout.activity_product_list)
         setSupportActionBar(toolbar)
 
-        val intentFilter = IntentFilter("com.insecureshop.action.PRODUCT_DETAIL")
-        registerReceiver(productDetailBroadCast, intentFilter)
+        //val intentFilter = IntentFilter("com.insecureshop.action.PRODUCT_DETAIL")
+        //registerReceiver(productDetailBroadCast, intentFilter)
         val productAdapter = ProductAdapter()
         recyclerview.layoutManager = GridLayoutManager(applicationContext, 2)
         recyclerview.adapter = productAdapter
         productAdapter.productList = Util.getProductsPrefs(this)
         productAdapter.notifyDataSetChanged()
+        Log.d(TAG_LIST_ACTIVITY, "onCreate: ProductListActivity setup complete.")
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

@@ -26,7 +26,6 @@ class CartListActivity : AppCompatActivity() {
         cartAdapter.notifyDataSetChanged()
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // handle arrow click here
         if (item.itemId == android.R.id.home) {
             finish()
         }

@@ -82,6 +82,9 @@ object Util {
                     Log.d(TAG, "getProductListFromJson: Parsed ${products?.size ?: 0} products from assets.")
                     products?.forEachIndexed { index, product ->
                         Log.d(TAG, "getProductListFromJson (Asset RAW): Product $index - ID: ${product.id}, Name: ${product.name}, ImageUrl: ${product.imageUrl}, Price: ${product.price}, Rating: ${product.rating}, Url: ${product.url}, Qty: ${product.qty}")
+                        if (product.url == null) {
+                            Log.e(TAG, "getProductListFromJson (Asset RAW EXTRA CHECK): Product $index - Name: ${product.name} HAS NULL URL!")
+                        }
                     }
                     return ArrayList(products ?: emptyList())
                 }
@@ -99,6 +102,9 @@ object Util {
         Log.d(TAG, "saveProductList: Attempting to save ${productListToSave.size} products.")
         productListToSave.forEachIndexed { index, product ->
             Log.d(TAG, "saveProductList (Before toJson): Product $index - ID: ${product.id}, Name: ${product.name}, ImageUrl: ${product.imageUrl}, Price: ${product.price}, Rating: ${product.rating}, Url: ${product.url}, Qty: ${product.qty}")
+            if (product.url == null) {
+                Log.e(TAG, "saveProductList (Before toJson EXTRA CHECK): Product $index - Name: ${product.name} HAS NULL URL!")
+            }
         }
         val productJson = Gson().toJson(productListToSave)
         Log.d(TAG, "saveProductList: Generated JSON to save: $productJson")
@@ -125,7 +131,10 @@ object Util {
             val listFromPrefs: List<ProductDetail>? = Gson().fromJson(productsJsonString, productListType)
             Log.d(TAG, "getProductsPrefs: Parsed ${listFromPrefs?.size ?: 0} products from Prefs.")
             listFromPrefs?.forEachIndexed { index, product ->
-                Log.d(TAG, "getProductsPrefs (Prefs Parsed): Product $index - ID: ${product.id}, Name: ${product.name}, ImageUrl: ${product.imageUrl}")
+                Log.d(TAG, "getProductsPrefs (Prefs Parsed): Product $index - ID: ${product.id}, Name: ${product.name}, ImageUrl: ${product.imageUrl}, Url: ${product.url}")
+                if (product.url == null) {
+                    Log.e(TAG, "getProductsPrefs (Prefs Parsed EXTRA CHECK): Product $index - Name: ${product.name} HAS NULL URL!")
+                }
             }
 
             if (listFromPrefs == null) {

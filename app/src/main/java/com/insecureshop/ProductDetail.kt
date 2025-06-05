@@ -12,5 +12,6 @@ data class ProductDetail(
     var rating: Int,
     var qty: Int = 0
 ) {
-    val url: String = Config.WEBSITE_DOMAIN
+    val url: String
+        get() = Config.WEBSITE_DOMAIN
 }

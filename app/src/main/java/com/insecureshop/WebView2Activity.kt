@@ -48,15 +48,21 @@ class WebView2Activity : AppCompatActivity() {
             }
 
             override fun shouldOverrideUrlLoading(
-                view: WebView, request: WebResourceRequest
+                view: WebView,
+                request: WebResourceRequest
             ): Boolean {
                 val uri: Uri = request.url
-                return if (uri.host == TRUSTED_HOST) {
-                    false
-                } else {
-                    finish()
-                    true
+                val currentHost = uri.host
+                val expectedHost1 = "insecureshopapp.com"
+                val expectedHost2 = "www.insecureshopapp.com"
+                if (currentHost != null &&
+                    (currentHost.equals(expectedHost1, ignoreCase = true) ||
+                            currentHost.equals(expectedHost2, ignoreCase = true))) {
+                    return false
                 }
+
+                finish()
+                return true
             }
         }
 

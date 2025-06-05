@@ -106,8 +106,7 @@
         </provider>
         <receiver
             android:name=".broadcast.ProductDetailBroadCast"
-            android:exported="true"
-            android:permission="com.insecureshop.permission.SEND_PROTECTED_BROADCAST">
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.insecureshop.action.PRODUCT_DETAIL" />
             </intent-filter>

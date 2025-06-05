@@ -1,6 +1,7 @@
 package com.insecureshop
 
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -10,6 +11,7 @@ import com.insecureshop.databinding.ProductItemBinding
 import com.insecureshop.util.Util
 
 class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
+    private val TAG_ADAPTER = "ProductAdapter_DEBUG"
 
     var productList : List<ProductDetail> = arrayListOf()
 
@@ -52,12 +54,14 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() 
             }
         }
         holder.mBinding.moreInfo.setOnClickListener {
+            Log.d(TAG_ADAPTER, "moreInfo CLICKED for product: ${prodDetail.name}")
 
             val intent = Intent("com.insecureshop.action.PRODUCT_DETAIL").apply {
                 putExtra("url", prodDetail.url)
                 setPackage(context.packageName)
             }
-            context.sendBroadcast(intent, "com.insecureshop.permission.SEND_PROTECTED_BROADCAST")
+            Log.d(TAG_ADAPTER, "Sending broadcast with URL: ${prodDetail.url}")
+            context.sendBroadcast(intent)
 
         }
     }
