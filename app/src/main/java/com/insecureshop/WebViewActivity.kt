@@ -51,8 +51,8 @@ class WebViewActivity : AppCompatActivity() {
             ): Boolean {
                 val uri: Uri = request.url
                 val currentHost = uri.host
-                val expectedHost1 = "insecureshopapp.com"
-                val expectedHost2 = "www.insecureshopapp.com"
+                val expectedHost1 = Config.SECOND_HOST
+                val expectedHost2 = Config.TRUSTED_HOST
 
                 Log.d(TAG, "shouldOverrideUrlLoading: Requested URL: ${request.url}")
                 Log.d(TAG, "shouldOverrideUrlLoading: Current host: $currentHost")

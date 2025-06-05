@@ -53,8 +53,8 @@ class WebView2Activity : AppCompatActivity() {
             ): Boolean {
                 val uri: Uri = request.url
                 val currentHost = uri.host
-                val expectedHost1 = "insecureshopapp.com"
-                val expectedHost2 = "www.insecureshopapp.com"
+                val expectedHost1 = Config.SECOND_HOST
+                val expectedHost2 = Config.TRUSTED_HOST
                 if (currentHost != null &&
                     (currentHost.equals(expectedHost1, ignoreCase = true) ||
                             currentHost.equals(expectedHost2, ignoreCase = true))) {
