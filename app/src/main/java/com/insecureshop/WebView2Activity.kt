@@ -1,5 +1,6 @@
 package com.insecureshop
 
+import android.content.ComponentName
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -10,21 +11,50 @@ import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_product_list.*
 import androidx.core.net.toUri
+import java.util.Locale
 
 
 class WebView2Activity : AppCompatActivity() {
 
     private val TRUSTED_HOST = Config.TRUSTED_HOST
 
+    private val ALLOWED_INTERNAL_ACTIVITIES = setOf<String>(
+        "com.insecureshop.SomeSafeInternalActivity"
+    )
+
+    private val ALLOWED_ACTIONS = setOf<String>(
+        Intent.ACTION_VIEW
+    )
+
+    private val ALLOWED_HOSTS_FOR_VIEW_ACTION = setOf(
+        Config.TRUSTED_HOST.toLowerCase(Locale.ROOT),
+        Config.SECOND_HOST.toLowerCase(Locale.ROOT)
+    )
+
+    private val ALLOWED_URI_SCHEMES_FOR_VIEW_ACTION = setOf("http", "https")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_webview)
         setSupportActionBar(toolbar)
         title = getString(R.string.webview)
-
+        val currentIntent = intent
         val extraIntent = intent.getParcelableExtra<Intent>("extra_intent")
         if (extraIntent != null) {
-            startActivity(extraIntent)
+            if (isIntentSafeToStart(extraIntent)) {
+                try {
+                    val intentToStart = Intent(extraIntent)
+                    intentToStart.removeFlags(
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION or
+                                Intent.FLAG_GRANT_WRITE_URI_PERMISSION or
+                                Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION or
+                                Intent.FLAG_GRANT_PREFIX_URI_PERMISSION
+                    )
+                    intentToStart.clipData = null
+                    startActivity(intentToStart)
+                } catch (e: Exception) {
+                }
+            }
             finish()
             return
         }
@@ -84,6 +114,46 @@ class WebView2Activity : AppCompatActivity() {
             }
         } else {
             webview.loadUrl(Config.WEBSITE_DOMAIN)
+        }
+    }
+    private fun isIntentSafeToStart(intentToValidate: Intent): Boolean {
+        val component: ComponentName? = intentToValidate.component
+        if (component != null) {
+            if (component.packageName != this.packageName) {
+                return false
+            }
+            if (ALLOWED_INTERNAL_ACTIVITIES.isNotEmpty() && !ALLOWED_INTERNAL_ACTIVITIES.contains(component.className)) {
+                return false
+            }
+            return true
+        } else {
+            val action = intentToValidate.action
+            if (action != null) {
+                if (ALLOWED_ACTIONS.isNotEmpty() && !ALLOWED_ACTIONS.contains(action)) {
+                    return false
+                }
+                if (action == Intent.ACTION_VIEW) {
+                    val dataUri = intentToValidate.data
+                    if (dataUri != null) {
+                        val scheme = dataUri.scheme?.toLowerCase(Locale.ROOT)
+                        if (scheme == null || !ALLOWED_URI_SCHEMES_FOR_VIEW_ACTION.contains(scheme)) {
+                            return false
+                        }
+                        if (dataUri.host != null) {
+                            val targetHost = dataUri.host?.toLowerCase(Locale.ROOT)
+                            if (targetHost == null || !ALLOWED_HOSTS_FOR_VIEW_ACTION.contains(targetHost)) {
+                                return false
+                            }
+                        }
+                        return true
+                    } else {
+                        return false
+                    }
+                }
+                return true
+            } else {
+                return false
+            }
         }
     }
 }
