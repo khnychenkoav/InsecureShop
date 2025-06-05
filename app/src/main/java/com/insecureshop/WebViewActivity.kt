@@ -52,30 +52,37 @@ class WebViewActivity : AppCompatActivity() {
             }
         }
 
-        val uri: Uri? = intent.data
-        if (uri != null) {
-            var data: String? = null
-            when (uri.path) {
-                "/web" -> {
-                    data = uri.getQueryParameter("url")
-                }
+        val extraUrl = intent.getStringExtra("url")
+        if (!extraUrl.isNullOrBlank()) {
+            webview.loadUrl(extraUrl)
+            Prefs.getInstance(this).data = extraUrl
+            return
+        }
+
+        val dataUri: Uri? = intent.data
+        if (dataUri != null) {
+            val loadedUrl: String? = when (dataUri.path) {
+                "/web" -> dataUri.getQueryParameter("url")
                 "/webview" -> {
-                    val candidate = uri.getQueryParameter("url")
+                    val candidate = dataUri.getQueryParameter("url")
                     if (candidate != null && candidate.toUri().host == TRUSTED_HOST) {
-                        data = candidate
+                        candidate
+                    } else {
+                        null
                     }
                 }
+                else -> null
             }
 
-            if (data.isNullOrBlank()) {
+            if (loadedUrl.isNullOrBlank()) {
                 finish()
                 return
             }
 
-            val finalUri = data.toUri()
+            val finalUri = loadedUrl.toUri()
             if (finalUri.host == TRUSTED_HOST) {
-                webview.loadUrl(data)
-                Prefs.getInstance(this).data = data
+                webview.loadUrl(loadedUrl)
+                Prefs.getInstance(this).data = loadedUrl
             } else {
                 finish()
             }
